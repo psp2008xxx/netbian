@@ -11,4 +11,9 @@ class NetbianCrawlerSpider(scrapy.Spider):
 
     def parse(self, response):
         self.logger.info('Parse function called on %s', response.url)
+        # for link in response.xpath('//*[@id="header"]/div[1]/ul/li'):
+        #     self.logger.info('link attribute is %s', link.xpath('div/a[1]/@href').extract())
+        for link in response.xpath('//div[@class="nav cate"]/a'):
+            self.logger.info('link attribute is %s', link.xpath('@href').extract())
+
 
