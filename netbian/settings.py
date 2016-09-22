@@ -73,8 +73,9 @@ MYSQL_PASSWD = 'password'
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
+    'netbian.pipelines.Netbian_Json_Pipeline': 100,
     'netbian.pipelines.Netbian_Mysql_Pipeline': 300,
-    'netbian.pipelines.Netbian_Json_Pipeline': 500,
+
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
