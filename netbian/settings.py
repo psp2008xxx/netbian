@@ -6,7 +6,7 @@
 # commonly used. You can find more settings consulting the documentation:
 #
 # http://doc.scrapy.org/en/latest/topics/settings.html
-#     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
+# http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
 BOT_NAME = 'netbian'
@@ -73,7 +73,8 @@ MYSQL_PASSWD = 'password'
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'netbian.pipelines.Netbian_Json_Pipeline': 100,
+    'netbian.pipelines.Netbian_Duplicates_Pipeline': 100,
+    'netbian.pipelines.Netbian_Json_Pipeline': 200,
     'netbian.pipelines.Netbian_Mysql_Pipeline': 300,
 
 }

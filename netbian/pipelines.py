@@ -8,7 +8,7 @@ from twisted.enterprise import adbapi
 from datetime import datetime
 from hashlib import md5
 from scrapy import log
-# from scrapy.exceptions import DropItem
+from scrapy.exceptions import DropItem
 from scrapy import signals
 from scrapy.exporters import JsonLinesItemExporter
 
@@ -89,3 +89,15 @@ class Netbian_Json_Pipeline(object):
     def process_item(self, item, spider):
         self.exporter.export_item(item)
         return item
+
+
+class Netbian_Duplicates_Pipeline(object):
+    def __init__(self):
+        self.link_set = set()
+
+    def process_item(self, item, spider):
+        if item['link_address'] in self.link_set:
+            raise DropItem("Duplicate item found: %s" % item)
+        else:
+            self.link_set.add(item['link_address'])
+            return item
