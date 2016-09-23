@@ -5,8 +5,10 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 from twisted.enterprise import adbapi
-import MySQLdb
-import MySQLdb.cursors
+from datetime import datetime
+from hashlib import md5
+from scrapy import log
+# from scrapy.exceptions import DropItem
 from scrapy import signals
 from scrapy.exporters import JsonLinesItemExporter
 
@@ -23,7 +25,6 @@ class Netbian_Mysql_Pipeline(object):
             user=settings['MYSQL_USER'],
             passwd=settings['MYSQL_PASSWD'],
             charset='utf8',
-            cursorclass=MySQLdb.cursors.DictCursor,
             use_unicode=True,
         )
         dbpool = adbapi.ConnectionPool('MySQLdb', **dbargs)
@@ -31,13 +32,36 @@ class Netbian_Mysql_Pipeline(object):
 
     def process_item(self, item, spider):
         d = self.dbpool.runInteraction(self._do_upinsert, item, spider)
+        d.addErrback(self._handle_error, item, spider)
+        d.addBoth(lambda _: item)
         return d
 
     def _do_upinsert(self, conn, item, spider):
-        conn.execute("""
-                INSERT INTO netbian_info(title_name, link_address)
-                VALUES(%s, %s)
-            """, (item['title_name'], item['link_address']))
+        guid = self._get_guid(item)
+        now = datetime.utcnow().replace(microsecond=0).isoformat(' ')
+        conn.execute("""SELECT EXISTS(
+            SELECT 1 FROM website WHERE guid = %s)""", (guid, ))
+        ret = conn.fetchone()[0]
+        if ret:
+            conn.execute("""
+           UPDATE website SET title_name=%s, link_address=%s, updated=%s WHERE guid=%s
+            """, (item['title_name'], item['link_address'], now, guid))
+            spider.log("Item updated in db: %s %r" % (guid, item))
+        else:
+            conn.execute("""
+            INSERT INTO website (guid, title_name, link_address, updated)
+                VALUES(%s, %s, %s, %s)"""
+                         , (guid, item['title_name'], item['link_address'], now))
+            spider.log("Item stored in db: %s %r" % (guid, item))
+
+    def _handle_error(self, failure, item, spider):
+        """Handle occurred on db interaction."""
+        log.err(failure)
+
+    def _get_guid(self, item):
+        """Generates an unique identifier for a given item."""
+        # hash based solely in the url field
+        return md5(item['link_address']).hexdigest()
 
 
 class Netbian_Json_Pipeline(object):

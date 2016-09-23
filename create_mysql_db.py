@@ -9,9 +9,11 @@ cursor = db.cursor()
 # cursor.execute("DROP TABLE IF EXISTS EMPLOYEE")
 
 sql = """
-CREATE TABLE netbian_info (
-  title_name char(32) NOT NULL,
-  link_address char(100))
+CREATE TABLE website (
+  guid CHAR(32) PRIMARY KEY,
+  title_name TEXT,
+  link_address TEXT,
+  updated DATETIME) DEFAULT CHARSET=utf8;
   """
 
 cursor.execute(sql)
