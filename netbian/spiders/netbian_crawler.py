@@ -2,6 +2,7 @@
 import scrapy
 from netbian.items import NetbianItem
 
+
 hdr = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -19,16 +20,22 @@ class NetbianCrawlerSpider(scrapy.Spider):
 
     def start_requests(self):
         for url in self.start_urls:
-            yield scrapy.Request(url, headers=hdr)
+            yield scrapy.Request(url, headers=hdr, callback=self.parse)
 
     def parse(self, response):
         self.logger.info('Parse function called on %s', response.url)
         for sub_link in response.xpath('//li[@class="more"]/div'):
             for link in sub_link.xpath('a'):
                 item = NetbianItem()
-                item['title_name'] = link.xpath('@title').extract() or link.xpath('text()').extract()
+                # item['title_name'] = link.xpath('@title').extract() or link.xpath('text()').extract()
                 item['link_address'] = self._link_post_process(link.xpath('@href').extract()[0])
                 yield item
+
+    def parse_image(self, response):
+        for link in response.xpath('//a'):
+            item = NetbianItem()
+            item['image_urls'] = link.xpath('img/@src').re(r'.*jpg$')
+            yield item
 
     def _link_post_process(self, link):
         if link.startswith('/'):

@@ -13,3 +13,5 @@ class NetbianItem(scrapy.Item):
     # name = scrapy.Field()
     title_name = scrapy.Field()
     link_address = scrapy.Field()
+    image_urls = scrapy.Field()
+    images = scrapy.Field()

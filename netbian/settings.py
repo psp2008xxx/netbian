@@ -29,6 +29,8 @@ MYSQL_PASSWD = 'password'
 # end of MySQL database configure setting
 
 
+
+
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
 
@@ -74,10 +76,16 @@ MYSQL_PASSWD = 'password'
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'netbian.pipelines.Netbian_Duplicates_Pipeline': 100,
-    'netbian.pipelines.Netbian_Json_Pipeline': 200,
-    'netbian.pipelines.Netbian_Mysql_Pipeline': 300,
+    'netbian.pipelines.Myimage_Crwaler_Pipeline': 300,
+    # 'netbian.pipelines.Netbian_Json_Pipeline': 200,
+    # 'netbian.pipelines.Netbian_Mysql_Pipeline': 300,
 
 }
+
+
+IMAGES_STORE = r'D:\image_crawl'
+IMAGES_URLS_FIELD = 'image_urls'
+IMAGES_RESULT_FIELD = 'images'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
