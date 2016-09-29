@@ -15,8 +15,6 @@ from scrapy.exporters import JsonLinesItemExporter
 from scrapy.pipelines.images import ImagesPipeline
 
 
-
-
 class Netbian_Mysql_Pipeline(object):
     def __init__(self, dbpool):
         self.dbpool = dbpool

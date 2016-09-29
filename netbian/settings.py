@@ -7,7 +7,7 @@
 #
 # http://doc.scrapy.org/en/latest/topics/settings.html
 # http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
-#     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
+# http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
 BOT_NAME = 'netbian'
 
@@ -16,7 +16,7 @@ NEWSPIDER_MODULE = 'netbian.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'netbian (+http://www.yourdomain.com)'
+# USER_AGENT = 'netbian (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -27,9 +27,6 @@ MYSQL_DBNAME = 'scraping'
 MYSQL_USER = 'root'
 MYSQL_PASSWD = 'password'
 # end of MySQL database configure setting
-
-
-
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -75,13 +72,11 @@ MYSQL_PASSWD = 'password'
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'netbian.pipelines.Netbian_Duplicates_Pipeline': 100,
+    # 'netbian.pipelines.Netbian_Duplicates_Pipeline': 100,
     'netbian.pipelines.Myimage_Crwaler_Pipeline': 300,
     # 'netbian.pipelines.Netbian_Json_Pipeline': 200,
     # 'netbian.pipelines.Netbian_Mysql_Pipeline': 300,
-
 }
-
 
 IMAGES_STORE = r'D:\image_crawl'
 IMAGES_URLS_FIELD = 'image_urls'

@@ -24,18 +24,14 @@ class NetbianCrawlerSpider(scrapy.Spider):
 
     def parse(self, response):
         self.logger.info('Parse function called on %s', response.url)
-        for sub_link in response.xpath('//li[@class="more"]/div'):
-            for link in sub_link.xpath('a'):
-                item = NetbianItem()
-                # item['title_name'] = link.xpath('@title').extract() or link.xpath('text()').extract()
-                item['link_address'] = self._link_post_process(link.xpath('@href').extract()[0])
-                yield item
+        for sub_link in response.xpath('//li[@class="more"]/div/a/@href').extract():
+            sub_link_address = self._link_post_process(sub_link)
+            yield scrapy.Request(sub_link_address, headers=hdr, callback=self.parse_image)
 
     def parse_image(self, response):
-        for link in response.xpath('//a'):
-            item = NetbianItem()
-            item['image_urls'] = link.xpath('img/@src').re(r'.*jpg$')
-            yield item
+        item = NetbianItem()
+        item['image_urls'] = response.xpath('//*/@data-src').extract()
+        yield item
 
     def _link_post_process(self, link):
         if link.startswith('/'):

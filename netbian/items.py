@@ -9,9 +9,5 @@ import scrapy
 
 
 class NetbianItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    title_name = scrapy.Field()
-    link_address = scrapy.Field()
     image_urls = scrapy.Field()
     images = scrapy.Field()
