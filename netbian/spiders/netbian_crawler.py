@@ -13,7 +13,7 @@ from netbian.items import NetbianItem
 
 
 class NetbianCrawlerSpider(scrapy.Spider):
-    name = "netbian_crawler"
+    name = "netbian"
     allowed_domains = ["netbian.com"]
     start_urls = ['http://www.netbian.com/']
     base_url = 'http://www.netbian.com'
@@ -32,6 +32,10 @@ class NetbianCrawlerSpider(scrapy.Spider):
         item = NetbianItem()
         item['image_urls'] = response.xpath('//*/@data-src').extract()
         yield item
+
+        for next_link in response.xpath('//div[@class="page"]/a[not(contains(@class,"prev"))]/@href').extract():
+            next_link_address = self._link_post_process(next_link)
+            yield scrapy.Request(next_link_address, callback=self.parse_image)
 
     def _link_post_process(self, link):
         if link.startswith('/'):

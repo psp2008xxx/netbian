@@ -98,10 +98,15 @@ class Netbian_Duplicates_Pipeline(object):
         self.link_set = set()
 
     def process_item(self, item, spider):
-        if item['link_address'] in self.link_set:
+        # if item['link_address'] in self.link_set:
+        #     raise DropItem("Duplicate item found: %s" % item)
+        # else:
+        #     self.link_set.add(item['link_address'])
+        #     return item
+        if item['image_urls'] in self.link_set:
             raise DropItem("Duplicate item found: %s" % item)
         else:
-            self.link_set.add(item['link_address'])
+            self.link_set.add(item['image_urls'])
             return item
 
 
